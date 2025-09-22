@@ -182,7 +182,7 @@ graph TD
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/your-username/invest-profile-app.git
+git clone https://github.com/Cavasini/Challenge-mobile.git
 cd invest-profile-app
 
 # 2. Instale as dependências
