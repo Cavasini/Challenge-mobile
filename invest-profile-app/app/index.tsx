@@ -3,9 +3,46 @@ import { Text } from "@/components/ui/text"
 import { TrendingUp } from "lucide-react-native"
 import { Stack, router } from "expo-router"
 import * as React from "react"
-import { View } from "react-native"
+import { View, ActivityIndicator } from "react-native"
+import { AuthService } from "@/lib/auth-service"
 
 export default function WelcomeScreen() {
+	const [isLoading, setIsLoading] = React.useState(true)
+
+	React.useEffect(() => {
+		checkAuthStatus()
+	}, [])
+
+	const checkAuthStatus = async () => {
+		try {
+			const isAuthenticated = await AuthService.isAuthenticated()
+			
+			if (isAuthenticated) {
+				// Se já está logado, redirecionar para o app principal
+				router.replace("/(tabs)/home")
+				return // Importante: return para não mostrar a tela
+			}
+		} catch (error) {
+			console.error("Error checking auth status:", error)
+		} finally {
+			setIsLoading(false)
+		}
+	}
+
+	// Se está carregando, mostrar loading
+	if (isLoading) {
+		return (
+			<>
+				<Stack.Screen options={{ headerShown: false }} />
+				<View className="flex-1 items-center justify-center bg-background">
+					<ActivityIndicator size="large" color="#4F46E5" />
+					<Text className="text-gray-400 mt-4">Verificando autenticação...</Text>
+				</View>
+			</>
+		)
+	}
+
+	// Se não está autenticado, mostrar tela de boas-vindas
 	return (
 		<>
 			<Stack.Screen options={{ headerShown: false }} />

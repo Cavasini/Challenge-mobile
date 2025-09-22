@@ -182,84 +182,68 @@ export default function Profile() {
 					<>
 						{/* Profile Card */}
 						{profileData && (
-							<Card
-								className={`mb-6 bg-gray-900/50 ${getProfileIcon(profileData.profileClassification).borderColor}`}
-							>
-								<CardHeader className="text-center py-12">
-									<View className="flex justify-center mb-6">
-										<View
-											className={`p-6 rounded-2xl ${getProfileIcon(profileData.profileClassification).bgColor} ${getProfileIcon(profileData.profileClassification).borderColor} border`}
-										>
-											{React.createElement(
-												getProfileIcon(profileData.profileClassification).icon,
-												{
-													size: 48,
-													color: getProfileIcon(profileData.profileClassification).color,
-												}
-											)}
-										</View>
+							<Card className="mb-6 bg-gray-900/50 border-gray-800">
+								<CardHeader className="items-start flex-row">
+									{/* Icon */}
+									<View className={`p-3 rounded-2xl ${getProfileIcon(profileData.profileClassification).bgColor} border ${getProfileIcon(profileData.profileClassification).borderColor}`}>
+										{React.createElement(
+											getProfileIcon(profileData.profileClassification).icon,
+											{
+												size: 28,
+												color: getProfileIcon(profileData.profileClassification).color,
+											}
+										)}
 									</View>
-									<CardTitle className="text-3xl text-white mb-4">
-										Perfil: {profileData.profileClassification}
-									</CardTitle>
-									<CardDescription className="text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
-										{getProfileDescription(profileData.profileClassification)}
-									</CardDescription>
+									<View className="flex-1 gap-2 ml-3">
+										{/* Title and Description */}
+										<CardTitle className="text-xl text-white text-left">
+											{profileData.profileClassification}
+										</CardTitle>
+										<CardDescription className="text-gray-300 text-left">
+											{getProfileDescription(profileData.profileClassification)}
+										</CardDescription>
+									</View>
 								</CardHeader>
-								<CardContent className="pb-12">
-									<View className="space-y-8">
-										{/* Risk Level */}
-										<View className="max-w-md mx-auto">
-											<View className="flex-row justify-between items-center mb-4">
-												<Text className="text-sm font-medium text-gray-300">
-													Nível de Risco
-												</Text>
-												<Text className="text-sm text-gray-400">
-													{getRiskLevel(profileData.profileClassification)}/3
-												</Text>
-											</View>
-											<Progress
-												value={(getRiskLevel(profileData.profileClassification) / 3) * 100}
-												className="h-2"
-											/>
-										</View>
-
-										{/* Special Characteristics */}
-										<View className="flex justify-center space-x-3">
-											{profileData.identifiedInterests?.liquidityNeeded && (
-												<Badge className="bg-blue-500/10 border-blue-500/20 flex-row items-center px-4 py-2">
-													<Droplets
-														size={16}
-														color="#60A5FA"
-													/>
-													<Text className="text-blue-400 ml-2">Alta Liquidez</Text>
-												</Badge>
-											)}
-											{(profileData.identifiedInterests?.esgInterest === "high" ||
-												profileData.identifiedInterests?.esgInterest === "strong") && (
-												<Badge className="bg-green-500/10 border-green-500/20 flex-row items-center px-4 py-2">
-													<TrendingUp
-														size={16}
-														color="#10B981"
-													/>
-													<Text className="text-green-400 ml-2">Alto ESG</Text>
-												</Badge>
-											)}
-										</View>
-
-										{/* Risk Notes */}
-										<View className="text-center max-w-2xl mx-auto">
-											<Text className="font-medium mb-3 text-gray-200">
-												Observações sobre Tolerância ao Risco
-											</Text>
-											<Text className="text-gray-400 leading-relaxed">
-												{profileData.identifiedInterests?.riskToleranceNotes ||
-													"Nenhuma observação específica."}
-											</Text>
-										</View>
-									</View>
-								</CardContent>
 							</Card>
+						)}
+
+						{/* Risk Level */}
+						{profileData && (
+							<View className="mb-6">
+								<View className="flex-row justify-between items-center mb-3">
+									<Text className="text-sm font-medium text-gray-300">Nível de Risco</Text>
+									<Text className="text-sm text-gray-400">{getRiskLevel(profileData.profileClassification)}/3</Text>
+								</View>
+								<Progress
+									value={(getRiskLevel(profileData.profileClassification) / 3) * 100}
+									className="h-2"
+								/>
+							</View>
+						)}
+
+						{/* High Liquidity Badge */}
+						{profileData?.identifiedInterests?.liquidityNeeded && (
+							<View className="items-start mb-6">
+								<Badge className="bg-blue-500/10 border-blue-500/20 flex-row items-center px-4 py-2">
+									<Droplets
+										size={16}
+										color="#60A5FA"
+									/>
+									<Text className="text-blue-400 ml-2">Alta Necessidade de Liquidez</Text>
+								</Badge>
+							</View>
+						)}
+
+						{/* Risk Notes */}
+						{profileData && (
+							<View className="mb-6">
+								<Text className="font-medium mb-2 text-gray-200 text-left">
+									Observações sobre Tolerância ao Risco
+								</Text>
+								<Text className="text-gray-400 text-left leading-relaxed">
+									{profileData.identifiedInterests?.riskToleranceNotes || "Nenhuma observação específica sobre tolerância ao risco."}
+								</Text>
+							</View>
 						)}
 
 						{/* Investment Value */}
