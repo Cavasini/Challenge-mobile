@@ -28,14 +28,78 @@ O **Invest Profile** é um aplicativo mobile desenvolvido em React Native que pe
 - 📊 **Análise de Perfil**
     - Classificação automática (Conservador, Moderado, Sofisticado)
     - Score de risco personalizado
-    - Recomendações baseadas em IA
+    - Algoritmos de análise inteligentes
     - Interface visual com ícones e cores por perfil
 
 - 💼 **Recomendações de Investimentos**
     - **Renda Fixa**: CDBs, LCIs, Tesouro Direto
     - **Renda Variável**: Ações recomendadas
-    - Dados em tempo real via API
+    - Dados realistas e atualizados
     - Informações detalhadas de cada investimento
+
+## 🎭 Sistema Mock Avançado
+
+### 🔥 **Atualmente em Modo Mock**
+
+O aplicativo está configurado para funcionar com **dados mockados**, oferecendo uma experiência completa sem dependência de APIs externas. Isso permite:
+
+- ⚡ **Desenvolvimento rápido** sem latência de rede
+- 🧪 **Testes consistentes** com dados previsíveis  
+- 📱 **Funcionamento offline** completo
+- 🎯 **Demonstrações** sem configuração de infraestrutura
+
+### 🎛️ **Configuração Mock vs API Real**
+
+O sistema usa um **toggle centralizado** que permite alternar entre modo mock e APIs reais:
+
+```typescript
+// lib/app-config.ts
+export const AppConfig = {
+  USE_MOCK_DATA: true,  // 🎭 MOCK | false = 🌐 APIs Reais
+  
+  MOCK_CONFIG: {
+    API_DELAY: 1500,    // Simula latência real
+    MOCK_USERS: [...],  // Usuários predefinidos
+    // ...configurações de mock
+  },
+  
+  API_CONFIG: {
+    PROFILE_BASE_URL: "http://54.210.233.65:8080/api/v1",
+    RECOMMENDER_BASE_URL: "http://54.210.233.65:8081/api/v1"
+    // ...URLs das APIs reais
+  }
+}
+```
+
+### 👥 **Usuários Mock Disponíveis**
+
+Para testar o sistema, use os seguintes usuários predefinidos:
+
+```
+📧 admin                    | 🔐 123456
+📧 teste@teste.com          | 🔐 teste123  
+📧 demo                     | 🔐 demo
+```
+
+### 🧠 **Inteligência do Sistema Mock**
+
+#### **Autenticação Mock**
+- ✅ Validação contra usuários predefinidos
+- ✅ Geração de tokens simulados
+- ✅ Persistência de sessão real
+- ✅ Simulação de delays de rede
+
+#### **Análise de Perfil Mock**
+- ✅ **Algoritmo real** de classificação baseado em respostas
+- ✅ Cálculo de score por peso das questões
+- ✅ Detecção automática de características (ESG, liquidez)
+- ✅ Classificação: Conservador (≤15), Moderado (16-25), Sofisticado (26+)
+
+#### **Recomendações Mock**
+- ✅ **25 investimentos de renda fixa** realistas
+- ✅ **25 ações brasileiras** com dados de mercado
+- ✅ Personalização baseada no perfil calculado
+- ✅ Diversificação automática por perfil de risco
 
 ## 🏗️ Arquitetura do Projeto
 
@@ -50,72 +114,61 @@ invest-profile/
 │   │   ├── profile.tsx       # Perfil do usuário
 │   │   └── recommendations.tsx # Recomendações
 │   ├── _layout.tsx           # Layout principal
-│   ├── index.tsx             # Tela de boas-vindas
+│   ├── index.tsx             # Tela de boas-vindas + Auth Check
 │   └── questionnaire.tsx     # Questionário de perfil
 ├── 🔧 api/                   # Integrações externas
-│   └── investment-api.ts     # API de investimentos
-├── 📚 lib/                   # Serviços e utilitários
-│   ├── auth-service.ts       # Serviços de autenticação
-│   ├── profile-service.ts    # Gerenciamento de perfil
-│   ├── theme.ts              # Configurações de tema
-│   └── utils.ts              # Utilitários gerais
+│   └── investment-api.ts     # APIs de investimentos
+├── 📚 lib/                   # Serviços e configurações
+│   ├── app-config.ts         # 🎛️ Configuração Mock/API
+│   ├── auth-service.ts       # 🔐 Autenticação (Mock + Real)
+│   ├── profile-service.ts    # 📊 Gestão de perfil e fluxo
+│   ├── mock-data.ts          # 🎭 Dados e algoritmos mock
+│   ├── theme.ts              # 🎨 Configurações de tema
+│   └── utils.ts              # 🛠️ Utilitários gerais
 ├── 🎨 components/            # Componentes reutilizáveis
 │   └── ui/                   # Componentes de interface
 └── 📱 assets/                # Recursos estáticos
 ```
 
-## 🔄 Integração com APIs
+## 🔄 Fluxo de Dados
 
-### 🌐 Endpoints Utilizados
+### � **Em Modo Mock (Atual)**
 
-O aplicativo se integra com duas APIs principais hospedadas na AWS:
-
-#### 1. **API de Análise de Perfil**
-
-- **Base URL**: `http://54.210.233.65:8080/api/v1`
-- **Endpoint**: `POST /profile/analyze`
-- **Função**: Analisa respostas do questionário e retorna classificação do perfil
-
-```typescript
-interface AnalyzeProfileRequest {
-	userId: string
-	answers: Record<string, string> // {q1: "a", q2: "b", ...}
-	monthlyInvestmentValue: number
-}
-
-interface AnalyzeProfileResponse {
-	userId: string
-	totalScore: number
-	profileClassification: "Conservador" | "Moderado" | "Sofisticado"
-	identifiedInterests: {
-		liquidityNeeded: boolean
-		esgInterest: string
-		macroeconomicConcerns: string[]
-		riskToleranceNotes: string
-	}
-}
+```mermaid
+graph TD
+    A[Login] --> B[AuthService Mock]
+    B --> C[Usuários Predefinidos]
+    C --> D[Questionário]
+    D --> E[Algoritmo Mock Local]
+    E --> F[Perfil Calculado]
+    F --> G[Recomendações Mock]
+    G --> H[AsyncStorage]
 ```
 
-#### 2. **API de Recomendações**
+1. **Login** → Validação contra usuários mock predefinidos
+2. **Questionário** → Coleta respostas e valor mensal  
+3. **Análise Local** → Algoritmo calcula perfil baseado em score
+4. **Recomendações** → Seleção personalizada da base mock
+5. **Persistência** → Dados salvos no AsyncStorage
 
-- **Base URL**: `http://54.210.233.65:8081/api/v1`
-- **Endpoint**: `POST /recommendations`
-- **Função**: Retorna investimentos recomendados baseados no perfil
+### 🌐 **Em Modo API Real (Futuro)**
 
-```typescript
-interface RecommendationResponse {
-	FixedIncomesList: FixedIncomeItem[] // Renda Fixa
-	VariableIncomesList: VariableIncomeItem[] // Ações
-}
+```mermaid
+graph TD
+    A[Login] --> B[API de Auth]
+    B --> C[Token JWT]
+    C --> D[Questionário]
+    D --> E[API de Análise]
+    E --> F[Perfil via API]
+    F --> G[API de Recomendações]
+    G --> H[Dados em Tempo Real]
 ```
 
-### 🔄 Fluxo de Dados
-
-1. **Questionário** → Coleta respostas e valor mensal
-2. **Análise** → Envia dados para API de perfil
-3. **Classificação** → Recebe perfil e características
-4. **Recomendações** → Solicita investimentos baseados no perfil
-5. **Persistência** → Salva dados localmente (AsyncStorage)
+1. **Login** → API de autenticação real
+2. **Questionário** → Dados enviados para APIs externas
+3. **Análise** → API processa respostas na nuvem
+4. **Recomendações** → Dados de mercado em tempo real
+5. **Persistência** → Cache local + sincronização
 
 ## 🚀 Como Executar
 
@@ -123,7 +176,6 @@ interface RecommendationResponse {
 
 - Node.js 18+
 - npm/yarn/pnpm
-- Expo CLI (`npm install -g @expo/cli`)
 - Android Studio (para Android) ou Xcode (para iOS)
 
 ### Instalação
@@ -135,13 +187,9 @@ cd invest-profile-app
 
 # 2. Instale as dependências
 npm install
-# ou
-yarn install
 
 # 3. Inicie o servidor de desenvolvimento
 npm run dev
-# ou
-yarn dev
 ```
 
 ### 📱 Executando no Dispositivo
@@ -150,7 +198,7 @@ yarn dev
 # Android
 npm run android
 
-# iOS (Mac apenas)
+# iOS (Mac apenas)  
 npm run ios
 
 # Web
@@ -159,93 +207,31 @@ npm run web
 
 Ou escaneie o QR code com o [Expo Go](https://expo.dev/go) no seu dispositivo.
 
+
+
 ## 🛠️ Stack Tecnológica
 
 ### Core
-
 - **React Native** - Framework mobile
 - **Expo** - Plataforma de desenvolvimento
 - **TypeScript** - Tipagem estática
 - **Expo Router** - Navegação baseada em arquivos
 
 ### UI/UX
-
 - **NativeWind** - Tailwind CSS para React Native
 - **React Native Reusables** - Componentes UI
 - **Lucide React Native** - Ícones
 - **Class Variance Authority** - Variantes de componentes
 
 ### Estado e Persistência
-
-- **AsyncStorage** - Armazenamento local
-- **Context API** - Gerenciamento de estado
-- **Custom Services** - Camada de serviços
-
-### Desenvolvimento
-
-- **ESLint + Prettier** - Linting e formatação
-- **Metro** - Bundler React Native
-
-## 📋 Funcionalidades Detalhadas
-
-### 🔐 Autenticação
-
-- **Login/Registro**: Interface intuitiva com validação
-- **Persistência**: Sessão mantida entre execuções
-- **Segurança**: Tokens salvos localmente de forma segura
-
-### 📝 Questionário de Perfil
-
-- **8 Perguntas Estratégicas**:
-    1. Objetivo principal de investimento
-    2. Necessidade de liquidez
-    3. Reação a perdas no mercado
-    4. Interesse em ESG
-    5. Conhecimento sobre investimentos
-    6. Horizonte de investimento
-    7. Situação financeira
-    8. Valor mensal para investir
-
-### 📊 Análise de Perfil
-
-- **Classificação Automática**:
-    - 🛡️ **Conservador**: Foco em segurança e preservação
-    - ⚖️ **Moderado**: Equilíbrio entre risco e retorno
-    - 🎯 **Sofisticado**: Alta tolerância ao risco
-
-### 💰 Recomendações
-
-- **Renda Fixa**: CDBs, LCIs, Tesouro com taxas atualizadas
-- **Renda Variável**: Ações com preços em tempo real
-- **Detalhes Completos**: Vencimento, liquidez, risco, etc.
-
-## 🔧 Serviços Principais
-
-### AuthService (`lib/auth-service.ts`)
-
-```typescript
-class AuthService {
-	static async login(login: string, password: string)
-	static async register(login: string, password: string)
-	static async logout()
-	static async getCurrentSession()
-}
-```
-
-### ProfileService (`lib/profile-service.ts`)
-
-```typescript
-class ProfileService {
-	static async saveQuestionnaireData(data: QuestionnaireData)
-	static async analyzeProfile(data: QuestionnaireData)
-	static async getRecommendations(userId: string)
-	static async getStoredData()
-}
-```
+- **AsyncStorage** - Armazenamento local persistente
+- **Custom Services** - Camada de abstração de dados
+- **Mock Data Layer** - Sistema inteligente de dados simulados
 
 ## 👨‍💻 Autores
 
 - Julia Amorim - RM99609
 - Lana Leite - RM551143
 - Matheus Cavasini - RM97722
-***
+
+---
